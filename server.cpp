@@ -24,7 +24,7 @@ int main(){
     cout << "socket conncetion sucessful!"<<'\n';
     sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(8000);
+    serverAddress.sin_port = htons(8080);
     serverAddress.sin_addr.s_addr = INADDR_ANY;
     cout << "connection configured" << '\n';
     result = bind(
@@ -37,6 +37,20 @@ int main(){
         cout << "Error: "<< WSAGetLastError() << '\n';
     }
     cout << "Socket bound successfully !" << '\n';
+    result = listen(sock,5);
+    if(result == SOCKET_ERROR){
+        cout << "Listen failed" << '\n';
+        cout << "Error: "<< WSAGetLastError() << '\n';
+    }
+    cout << "Server Listening..." <<'\n';
+
+    SOCKET clientSocket = accept(sock, nullptr, nullptr);
+    if(clientSocket == INVALID_SOCKET){
+        cout << "Accept fail" << '\n';
+        cout << "Error: "<< WSAGetLastError() <<'\n';
+    }
+    cout << "client connected !" <<'\n';
+
     closesocket(sock);
     WSACleanup();
 
