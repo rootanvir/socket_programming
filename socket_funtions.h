@@ -3,8 +3,8 @@
 
 #include <winsock2.h>
 
-bool servermsgreceive(char buffer[], SOCKET clientSocket);
+bool msgreceive(char buffer[], SOCKET clientSocket);
 
-bool clientmsgsend(const char* message, SOCKET clientSocket);
+bool msgsend(const char* message, SOCKET clientSocket);
 
 #endif

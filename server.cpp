@@ -1,6 +1,11 @@
 #include <iostream>
 #include <winsock2.h>
 #include "socket_funtions.h"
+#include <thread>
+#include <conio.h>
+#include <atomic>
+
+
 using namespace std;
 
 #pragma comment(lib, "ws2_32.lib")
@@ -56,17 +61,31 @@ int main()
         cout << "Error: " << WSAGetLastError() << '\n';
     }
     cout << "client connected !" << '\n';
-
+    std::atomic<bool> connected(true);
     char buffer[1024];
-    while (true)
+    thread receiveThread([&](){
+        while(connected){
+            if(!msgreceive(buffer, clientSocket)){
+                connected = false;
+                break;
+            }
+        }
+    });
+    while (connected)
     {
-
-        if (!servermsgreceive(buffer, clientSocket))
-        {
+        char message[1024];
+        cin.getline(message,1024);
+        if(!connected){
             break;
         }
-        clientmsgsend("Hello Client!", clientSocket);
+        if(!msgsend(message,clientSocket)){
+            connected = false;
+            break;
+        }
+        
     }
+
+    receiveThread.join();
 
     closesocket(sock);
     WSACleanup();
